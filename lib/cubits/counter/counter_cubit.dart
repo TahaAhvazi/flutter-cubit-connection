@@ -13,7 +13,6 @@ class CounterCubit extends Cubit<CounterState> {
   late final StreamSubscription colorStreamSubscription;
   CounterCubit({
     required this.colorCubit,
-    required this.colorStreamSubscription,
   }) : super(CounterState.initial()) {
     colorStreamSubscription = colorCubit.stream.listen((ColorState colorState) {
       if (colorState.color == Colors.red) {
@@ -21,7 +20,7 @@ class CounterCubit extends Cubit<CounterState> {
       } else if (colorState.color == Colors.green) {
         incrementSize = 10;
       } else if (colorState.color == Colors.black) {
-        incrementSize = -100;
+        emit(state.copyWith(counter: state.counter - 100));
       } else if (colorState.color == Colors.blue) {
         incrementSize = 100;
       }

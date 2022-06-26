@@ -1,4 +1,7 @@
+import 'package:cubit_connect/cubits/color/color_cubit.dart';
+import 'package:cubit_connect/cubits/counter/counter_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,21 +13,33 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ColorCubit>(
+          create: (context) => ColorCubit(),
+        ),
+        BlocProvider<CounterCubit>(
+          create: (context) => CounterCubit(
+            colorCubit: context.read<ColorCubit>(),
+          ),
+        )
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          // This is the theme of your application.
+          //
+          // Try running your application with "flutter run". You'll see the
+          // application has a blue toolbar. Then, without quitting the app, try
+          // changing the primarySwatch below to Colors.green and then invoke
+          // "hot reload" (press "r" in the console where you ran "flutter run",
+          // or simply save your changes to "hot reload" in a Flutter IDE).
+          // Notice that the counter didn't reset back to zero; the application
+          // is not restarted.
+          primarySwatch: Colors.blue,
+        ),
+        home: const MyHomePage(),
       ),
-      home: const MyHomePage(),
     );
   }
 }
@@ -35,6 +50,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.watch<ColorCubit>().state.color,
       appBar: AppBar(
         title: const Text("Cubit Commuinication"),
         centerTitle: true,
@@ -44,19 +60,27 @@ class MyHomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                context.read<ColorCubit>().ChangeColor();
+              },
               child: const Text("Change Color !"),
             ),
             const SizedBox(
               height: 22.0,
             ),
-            const Text('0'),
+            Text(
+              '${context.watch<CounterCubit>().state.counter}',
+            ),
             const SizedBox(
               height: 22.0,
             ),
             ElevatedButton(
-              onPressed: () {},
-              child: const Text("Increment the value!"),
+              onPressed: () {
+                context.read<CounterCubit>().changeCounter();
+              },
+              child: Text(
+                "Increment the value!",
+              ),
             ),
           ],
         ),
