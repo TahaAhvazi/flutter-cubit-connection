@@ -19,9 +19,7 @@ class MyApp extends StatelessWidget {
           create: (context) => ColorCubit(),
         ),
         BlocProvider<CounterCubit>(
-          create: (context) => CounterCubit(
-            colorCubit: context.read<ColorCubit>(),
-          ),
+          create: (context) => CounterCubit(),
         )
       ],
       child: MaterialApp(
@@ -38,51 +36,74 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        home: const MyHomePage(),
+        home: MyHomePage(),
       ),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key? key}) : super(key: key);
 
   @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int incrementsize = 1;
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.watch<ColorCubit>().state.color,
-      appBar: AppBar(
-        title: const Text("Cubit Commuinication"),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                context.read<ColorCubit>().ChangeColor();
-              },
-              child: const Text("Change Color !"),
-            ),
-            const SizedBox(
-              height: 22.0,
-            ),
-            Text(
-              '${context.watch<CounterCubit>().state.counter}',
-            ),
-            const SizedBox(
-              height: 22.0,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                context.read<CounterCubit>().changeCounter();
-              },
-              child: Text(
-                "Increment the value!",
+    return BlocListener<ColorCubit, ColorState>(
+      listener: (context, state) {
+        // TODO: implement listener
+        if (state.color == Colors.red) {
+          incrementsize = 1;
+        } else if (state.color == Colors.green) {
+          incrementsize = 10;
+        } else if (state.color == Colors.black) {
+          context.read<CounterCubit>().changeCounter(-100);
+          incrementsize = -100;
+        } else if (state.color == Colors.blue) {
+          incrementsize = 100;
+        }
+      },
+      child: Scaffold(
+        backgroundColor: context.watch<ColorCubit>().state.color,
+        appBar: AppBar(
+          title: const Text("Cubit Commuinication"),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  context.read<ColorCubit>().ChangeColor();
+                  print("Clicked2");
+                },
+                child: const Text("Change Color !"),
               ),
-            ),
-          ],
+              const SizedBox(
+                height: 22.0,
+              ),
+              Text(
+                '${context.watch<CounterCubit>().state.counter}',
+              ),
+              const SizedBox(
+                height: 22.0,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  context.read<CounterCubit>().changeCounter(incrementsize);
+                  print("Clicked1");
+                },
+                child: Text(
+                  "Increment the value!",
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

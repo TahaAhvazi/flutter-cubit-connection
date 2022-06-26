@@ -5,7 +5,7 @@ class ColorState extends Equatable {
   const ColorState({required this.color});
 
   factory ColorState.initial() {
-    return const ColorState(color: Colors.red);
+    return const ColorState(color: Colors.black);
   }
 
   @override
@@ -18,6 +18,8 @@ class ColorState extends Equatable {
   }
 
   ColorState copyWith({Color? color}) {
-    return ColorState(color: color ?? this.color);
+    return ColorState(
+      color: color ?? this.color,
+    );
   }
 }
