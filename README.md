@@ -1,6 +1,6 @@
 # cubit_connect
 
-A new Flutter project.
+A Flutter application with BLOC pattern focus on how to communicate with cubits.✌️💙
 
 ## Getting Started
 
